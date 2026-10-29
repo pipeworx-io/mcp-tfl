@@ -1,0 +1,102 @@
+[
+  {
+    "name": "line_status",
+    "description": "Current service status for London transport lines. Pass either a comma-separated list of modes (e.g. \"tube,dlr\") OR a specific lineId (e.g. \"victoria\", \"central\"). Returns each line with lineStatuses + statusSeverityDescription (e.g. \"Good Service\", \"Minor Delays\").",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "modes": {
+          "type": "string",
+          "description": "Comma-separated transport modes: tube, dlr, overground, elizabeth-line, bus, tram, national-rail. Used when lineId is not given."
+        },
+        "lineId": {
+          "type": "string",
+          "description": "Specific line id, e.g. \"victoria\", \"central\", \"elizabeth\". Takes precedence over modes."
+        }
+      }
+    }
+  },
+  {
+    "name": "stop_search",
+    "description": "Search for stops/stations by name. Returns matches with a naptanId (the \"id\" field) used by the arrivals tool, plus modes, zone, and lat/lon.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Stop/station name to search for, e.g. \"Oxford Circus\"."
+        },
+        "modes": {
+          "type": "string",
+          "description": "Optional filter. Comma-separated transport modes: tube, dlr, overground, elizabeth-line, bus, tram, national-rail."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  },
+  {
+    "name": "arrivals",
+    "description": "Real-time predicted arrivals at a stop. Pass the naptanId from stop_search (e.g. \"940GZZLUOXC\"). Results are sorted by timeToStation (seconds away), nearest first.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "naptanId": {
+          "type": "string",
+          "description": "Stop NaPTAN id, obtained from stop_search."
+        }
+      },
+      "required": [
+        "naptanId"
+      ]
+    }
+  },
+  {
+    "name": "plan_journey",
+    "description": "Plan a journey across London transport. from/to may be stop names, postcodes, or \"lat,lon\" coordinates. Returns journey options (legs, durations, modes). If a location is ambiguous, the API returns disambiguation options instead of journeys — refine the input or use a naptanId/coords.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Origin: stop name, postcode, or \"lat,lon\"."
+        },
+        "to": {
+          "type": "string",
+          "description": "Destination: stop name, postcode, or \"lat,lon\"."
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ]
+    }
+  },
+  {
+    "name": "bike_points",
+    "description": "London Santander Cycle hire scheme — live pushbike and empty-dock counts at each London cycle-hire docking point (bikes available, spaces free, total capacity in additionalProperties). London public bicycle rental only. Pass an optional area filter, e.g. \"Clerkenwell\"; omit for all London cycle docks.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "string",
+          "description": "Optional name/area filter, e.g. \"Clerkenwell\". Omit for all docks."
+        }
+      }
+    }
+  },
+  {
+    "name": "disruptions",
+    "description": "Current disruptions for the given transport modes, with description and affected lines.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "modes": {
+          "type": "string",
+          "description": "Comma-separated transport modes: tube, dlr, overground, elizabeth-line, bus, tram, national-rail. Defaults to \"tube\"."
+        }
+      }
+    }
+  }
+]
